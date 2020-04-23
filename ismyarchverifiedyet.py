@@ -20,7 +20,7 @@ COLOR_RESET = '\x1b[0m'
 
 def get_rebuilds(rebuilder):
     url = f'{rebuilder}api/v0/pkgs/list?distro=archlinux'
-    print('[*] Fetching ' + url)
+    print(f'[*] Fetching {url}')
     req = requests.get(url)
     req.raise_for_status()
     return {x['name']: [x['version'], x['status']] for x in req.json()}
@@ -39,25 +39,21 @@ def main():
 
     for name, version in packages:
         versions = [build[name] for build in rebuilds if name in build]
-        statusses = [status for ver, status in versions if ver == version]
-        confirmations = statusses.count('GOOD')
+        statuses = [status for ver, status in versions if ver == version]
 
-        if confirmations >= THRESHOLD:
-            good += 1
+        confirmations = statuses.count('GOOD')
+        good += THRESHOLD <= confirmations
 
         color = COLOR_GREEN
-
-        if confirmations == 0:
-            color = COLOR_RED
-        elif confirmations == 1:
-            color = COLOR_YELLOW
+        if confirmations == 0: color = COLOR_RED
+        if confirmations == 1: color = COLOR_YELLOW
 
         label = f'{name} {version}'
         print(f'{color}{label:<70}{confirmations}{COLOR_RESET}')
 
     total = len(packages)
     percent = 100 / total * good if total else 0
-    print('Your system is to %s%% verified' % percent)
+    print(f'Your system is to {percent}% verified')
 
 
 if __name__ == "__main__":
