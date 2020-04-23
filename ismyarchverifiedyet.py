@@ -5,8 +5,9 @@ import requests
 
 # the rebuilders we're querying
 REBUILDERS = [
-    'https://wolfpit.net/rebuild/',
+    'https://reproducible.archlinux.org/',
     'https://rebuilder.fzylab.net/',
+    'https://wolfpit.net/rebuild/',
 ]
 
 # number of confirms required to consider it "verified" in our stats
