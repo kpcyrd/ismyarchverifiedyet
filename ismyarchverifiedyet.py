@@ -37,7 +37,14 @@ def get_installed_pkgs():
 
 def main(status):
     packages = get_installed_pkgs()
-    rebuilds = [get_rebuilds(rebuilder) for rebuilder in REBUILDERS]
+    rebuilds = []
+    for rebuilder in REBUILDERS:
+        try:
+            r = get_rebuilds(rebuilder)
+        except Exception as e:
+            print(f'[-] Error: {e}')
+        else:
+            rebuilds.append(r)
 
     good = 0
 
