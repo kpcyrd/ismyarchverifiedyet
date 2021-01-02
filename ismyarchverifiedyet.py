@@ -62,7 +62,7 @@ def main(status):
 
     total = len(packages)
     percent = 100 / total * good if total else 0
-    print(f'Your system is to {percent}% verified')
+    print(f'Your system is to {percent:.1f}% verified')
 
 
 if __name__ == "__main__":
