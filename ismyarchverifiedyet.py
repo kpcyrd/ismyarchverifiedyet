@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import subprocess
 import requests
 
@@ -12,6 +13,8 @@ REBUILDERS = [
 
 # number of confirms required to consider it "verified" in our stats
 THRESHOLD = 1
+GOOD = 'good'
+BAD = 'bad'
 
 # ansi escape sequences
 COLOR_RED = '\x1b[31m'
@@ -32,7 +35,7 @@ def get_installed_pkgs():
     return [line.split() for line in lines.split('\n') if line]
 
 
-def main():
+def main(status):
     packages = get_installed_pkgs()
     rebuilds = [get_rebuilds(rebuilder) for rebuilder in REBUILDERS]
 
@@ -44,6 +47,11 @@ def main():
 
         confirmations = statuses.count('GOOD')
         good += THRESHOLD <= confirmations
+
+        if status == BAD and THRESHOLD <= confirmations:
+            continue
+        elif status == GOOD and THRESHOLD > confirmations:
+            continue
 
         color = COLOR_GREEN
         if confirmations == 0: color = COLOR_RED
@@ -58,4 +66,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Shows the amount of reproducible packages on your system.')
+    parser.add_argument('--status', type=str, choices=[GOOD, BAD], help='Filter results on reproducible status')
+
+    args = parser.parse_args()
+    main(args.status)
