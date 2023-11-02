@@ -7,7 +7,6 @@ import requests
 # the rebuilders we're querying
 REBUILDERS = [
     'https://reproducible.archlinux.org/',
-    'https://rebuilder.fzylab.net/',
     'https://wolfpit.net/rebuild/',
     'https://r-b.engineering.nyu.edu/',
 ]
