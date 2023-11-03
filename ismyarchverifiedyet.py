@@ -22,12 +22,13 @@ COLOR_GREEN = '\x1b[32m'
 COLOR_YELLOW = '\x1b[33m'
 COLOR_RESET = '\x1b[0m'
 
+
 def get_rebuilds(rebuilder):
     url = f'{rebuilder}api/v0/pkgs/list?distro=archlinux'
     print(f'[*] Fetching {url}')
     req = requests.get(url)
     req.raise_for_status()
-    return {x['name']: [x['version'], x['status']] for x in req.json()}
+    return {(x["name"], x["version"]): x['status'] for x in req.json()}
 
 
 def get_installed_pkgs():
@@ -49,8 +50,8 @@ def main(status):
     good = 0
 
     for name, version in packages:
-        versions = [build[name] for build in rebuilds if name in build]
-        statuses = [status for ver, status in versions if ver == version]
+        pkg = (name, version)
+        statuses = [build[pkg] for build in rebuilds if pkg in build]
 
         confirmations = statuses.count('GOOD')
         good += THRESHOLD <= confirmations
@@ -61,8 +62,10 @@ def main(status):
             continue
 
         color = COLOR_GREEN
-        if confirmations == 0: color = COLOR_RED
-        if confirmations == 1: color = COLOR_YELLOW
+        if confirmations == 0:
+            color = COLOR_RED
+        if confirmations == 1:
+            color = COLOR_YELLOW
 
         label = f'{name} {version}'
         print(f'{color}{label:<70}{confirmations}{COLOR_RESET}')
