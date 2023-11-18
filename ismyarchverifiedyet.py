@@ -9,6 +9,7 @@ REBUILDERS = [
     'https://reproducible.archlinux.org/',
     'https://wolfpit.net/rebuild/',
     'https://r-b.engineering.nyu.edu/',
+    'https://rebuilder.pitastrudl.me/'
 ]
 
 # number of confirms required to consider it "verified" in our stats
